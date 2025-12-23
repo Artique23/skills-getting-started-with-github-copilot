@@ -91,8 +91,8 @@ section h3 {
 }
 
 .participants-list {
-  list-style: disc;
-  margin-left: 20px;
+  list-style: none;
+  margin-left: 0;
   margin-bottom: 0;
   padding-left: 0;
 }
@@ -102,6 +102,26 @@ section h3 {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* Remove button next to a participant */
+.participant-remove {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #c62828;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+.participant-remove:hover {
+  background: rgba(198,40,40,0.08);
+}
+.participant-remove:focus {
+  outline: 2px solid rgba(26,35,126,0.15);
 }
 
 /* Small circular badge for participant initials */
