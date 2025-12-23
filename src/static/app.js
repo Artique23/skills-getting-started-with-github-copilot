@@ -20,11 +20,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+        // Build participants HTML
+        let participantsHtml = "";
+        if (details.participants && details.participants.length > 0) {
+          participantsHtml = `<ul class="participants-list">` +
+            details.participants.map(p => {
+              const safe = escapeHtml(p);
+              const initials = initialsFromEmail(p);
+              return `<li><span class="participant-badge">${initials}</span><span class="participant-name">${safe}</span></li>`;
+            }).join("") +
+            `</ul>`;
+        } else {
+          participantsHtml = `<p class="participants-empty">No participants yet</p>`;
+        }
+
         activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
+          <h4>${escapeHtml(name)}</h4>
+          <p>${escapeHtml(details.description)}</p>
+          <p><strong>Schedule:</strong> ${escapeHtml(details.schedule)}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+
+          <div class="participants-section">
+            <div class="section-title"><strong>Participants</strong></div>
+            ${participantsHtml}
+          </div>
         `;
 
         activitiesList.appendChild(activityCard);
@@ -80,6 +99,25 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Add helper to escape HTML and get initials
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function initialsFromEmail(email) {
+    // Use part before @, split on non-alnum, take up to two initials
+    const name = (email || "").split("@")[0];
+    const parts = name.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+    if (parts.length === 0) return email.slice(0,1).toUpperCase();
+    if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
 
   // Initialize app
   fetchActivities();
